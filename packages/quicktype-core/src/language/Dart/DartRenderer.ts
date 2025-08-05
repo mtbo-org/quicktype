@@ -211,6 +211,9 @@ export class DartRenderer extends ConvenienceRenderer {
             this.emitLine(
                 "import 'package:freezed_annotation/freezed_annotation.dart';",
             );
+            this.emitLine(
+                "import 'package:freezed_collection/freezed_collection.dart';",
+            );
         }
 
         if (this._options.useHive) {
@@ -283,14 +286,14 @@ export class DartRenderer extends ConvenienceRenderer {
             (_stringType) => withNullable("String"),
             (arrayType) =>
                 withNullable([
-                    "List<",
+                    "FreezedList<",
                     this.dartType(arrayType.items, withIssues),
                     ">",
                 ]),
             (classType) => withNullable(this.nameForNamedType(classType)),
             (mapType) =>
                 withNullable([
-                    "Map<String, ",
+                    "FreezedMap<String, ",
                     this.dartType(mapType.values, withIssues),
                     ">",
                 ]),
@@ -836,7 +839,7 @@ export class DartRenderer extends ConvenienceRenderer {
         this.emitDescription(this.descriptionForType(c));
 
         this.emitLine("@freezed");
-        this.emitBlock(["class ", className, " with _$", className], () => {
+        this.emitBlock(["abstract class ", className, " with _$", className], () => {
             if (c.getProperties().size === 0) {
                 this.emitLine(
                     "const factory ",
