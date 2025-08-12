@@ -332,7 +332,7 @@ export class DartRenderer extends ConvenienceRenderer {
             return [
                 list,
                 " == null ? [] : ",
-                "List<",
+                "FreezedList<",
                 itemType,
                 ">.from(",
                 list,
@@ -343,7 +343,7 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         return [
-            "List<",
+            "FreezedList<",
             itemType,
             ">.from(",
             list,
@@ -365,7 +365,7 @@ export class DartRenderer extends ConvenienceRenderer {
             !this._options.requiredProperties
         ) {
             return [
-                "Map.from(",
+                "FreezedMap.from(",
                 map,
                 "!).map((k, v) => MapEntry<String, ",
                 valueType,
@@ -376,7 +376,7 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         return [
-            "Map.from(",
+            "FreezedMap.from(",
             map,
             ").map((k, v) => MapEntry<String, ",
             valueType,
@@ -901,6 +901,9 @@ export class DartRenderer extends ConvenienceRenderer {
 
     protected emitEnumDefinition(e: EnumType, enumName: Name): void {
         this.emitDescription(this.descriptionForType(e));
+        if (this._options.useJsonAnnotation) {
+            this.emitLine("@JsonEnum(alwaysCreate: true)");
+        }
         this.emitLine("enum ", enumName, " {");
         this.indent(() => {
             this.forEachEnumCase(e, "none", (name, jsonName, pos) => {

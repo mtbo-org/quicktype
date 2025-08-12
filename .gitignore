@@ -1,3 +1,4 @@
+*.tgz
 node_modules/
 /test/awesome-json-results/
 npm-debug.log
