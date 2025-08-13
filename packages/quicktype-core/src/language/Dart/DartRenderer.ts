@@ -203,6 +203,7 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         this.ensureBlankLine();
+
         if (this._options.requiredProperties) {
             this.emitLine("import 'package:meta/meta.dart';");
         }
@@ -226,6 +227,10 @@ export class DartRenderer extends ConvenienceRenderer {
                 "import 'package:json_annotation/json_annotation.dart';",
             );
         }
+
+        this.ensureBlankLine();
+        this.emitLine("// ignore_for_file: constant_identifier_names");
+        this.ensureBlankLine();
 
         this.emitLine("import 'dart:convert';");
         if (
@@ -334,7 +339,7 @@ export class DartRenderer extends ConvenienceRenderer {
                 " == null ? [] : ",
                 "FreezedList<",
                 itemType,
-                ">.from(",
+                ">(",
                 list,
                 "!.map((x) => ",
                 mapper,
@@ -345,7 +350,7 @@ export class DartRenderer extends ConvenienceRenderer {
         return [
             "FreezedList<",
             itemType,
-            ">.from(",
+            ">(",
             list,
             ".map((x) => ",
             mapper,
@@ -365,7 +370,7 @@ export class DartRenderer extends ConvenienceRenderer {
             !this._options.requiredProperties
         ) {
             return [
-                "FreezedMap.from(",
+                "FreezedMap(",
                 map,
                 "!).map((k, v) => MapEntry<String, ",
                 valueType,
@@ -376,7 +381,7 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         return [
-            "FreezedMap.from(",
+            "FreezedMap(",
             map,
             ").map((k, v) => MapEntry<String, ",
             valueType,
