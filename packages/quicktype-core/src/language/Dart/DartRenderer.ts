@@ -6,13 +6,13 @@ import {
     ConvenienceRenderer,
     type ForbiddenWordsInfo,
 } from "../../ConvenienceRenderer";
-import { DependencyName, type Name, type Namer } from "../../Naming";
-import type { RenderContext } from "../../Renderer";
-import type { OptionValues } from "../../RendererOptions";
-import { type Sourcelike, maybeAnnotated, modifySource } from "../../Source";
-import { decapitalize, snakeCase } from "../../support/Strings";
-import { defined } from "../../support/Support";
-import type { TargetLanguage } from "../../TargetLanguage";
+import {DependencyName, type Name, type Namer} from "../../Naming";
+import type {RenderContext} from "../../Renderer";
+import type {OptionValues} from "../../RendererOptions";
+import {type Sourcelike, maybeAnnotated, modifySource} from "../../Source";
+import {decapitalize, snakeCase} from "../../support/Strings";
+import {defined} from "../../support/Support";
+import type {TargetLanguage} from "../../TargetLanguage";
 import {
     type ClassProperty,
     type ClassType,
@@ -26,8 +26,8 @@ import {
     nullableFromUnion,
 } from "../../Type/TypeUtils";
 
-import { keywords } from "./constants";
-import type { dartOptions } from "./language";
+import {keywords} from "./constants";
+import type {dartOptions} from "./language";
 import {
     enumCaseNamingFunction,
     propertyNamingFunction,
@@ -72,7 +72,7 @@ export class DartRenderer extends ConvenienceRenderer {
         _c: ClassType,
         _className: Name,
     ): ForbiddenWordsInfo {
-        return { names: [], includeGlobalForbidden: true };
+        return {names: [], includeGlobalForbidden: true};
     }
 
     protected makeNamedTypeNamer(): Namer {
@@ -124,7 +124,7 @@ export class DartRenderer extends ConvenienceRenderer {
             name.order,
             (lookup) => `${lookup(name)}_${this.fromJson}`,
         );
-        this._topLevelDependents.set(name, { encoder, decoder });
+        this._topLevelDependents.set(name, {encoder, decoder});
         return [encoder, decoder];
     }
 
@@ -191,7 +191,7 @@ export class DartRenderer extends ConvenienceRenderer {
             this.emitLine("// To parse this JSON data, do");
             this.emitLine("//");
             this.forEachTopLevel("none", (_t, name) => {
-                const { decoder } = defined(this._topLevelDependents.get(name));
+                const {decoder} = defined(this._topLevelDependents.get(name));
                 this.emitLine(
                     "//     final ",
                     modifySource(decapitalize, name),
@@ -258,7 +258,7 @@ export class DartRenderer extends ConvenienceRenderer {
     }
 
     protected emitDescriptionBlock(lines: Sourcelike[]): void {
-        this.emitCommentLines(lines, { lineStart: "///", beforeComment: "" });
+        this.emitCommentLines(lines, {lineStart: "///", beforeComment: ""});
     }
 
     protected emitBlock(line: Sourcelike, f: () => void): void {
@@ -291,14 +291,16 @@ export class DartRenderer extends ConvenienceRenderer {
             (_stringType) => withNullable("String"),
             (arrayType) =>
                 withNullable([
-                    "FreezedList<",
+                    this._options.useFreezed ?
+                        "FreezedList<" : "List<",
                     this.dartType(arrayType.items, withIssues),
                     ">",
                 ]),
             (classType) => withNullable(this.nameForNamedType(classType)),
             (mapType) =>
                 withNullable([
-                    "FreezedMap<String, ",
+                    this._options.useFreezed ?
+                        "FreezedMap<String, " : "Map<String, ",
                     this.dartType(mapType.values, withIssues),
                     ">",
                 ]),
@@ -337,7 +339,8 @@ export class DartRenderer extends ConvenienceRenderer {
             return [
                 list,
                 " == null ? [] : ",
-                "FreezedList<",
+                this._options.useFreezed ?
+                    "FreezedList<" : "List<",
                 itemType,
                 ">(",
                 list,
@@ -348,7 +351,8 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         return [
-            "FreezedList<",
+            this._options.useFreezed ?
+                "FreezedList<" : "List<",
             itemType,
             ">(",
             list,
@@ -370,7 +374,8 @@ export class DartRenderer extends ConvenienceRenderer {
             !this._options.requiredProperties
         ) {
             return [
-                "FreezedMap(",
+                this._options.useFreezed ?
+                    "FreezedMap(" : "Map(",
                 map,
                 "!).map((k, v) => MapEntry<String, ",
                 valueType,
@@ -381,7 +386,8 @@ export class DartRenderer extends ConvenienceRenderer {
         }
 
         return [
-            "FreezedMap(",
+            this._options.useFreezed ?
+                "FreezedMap(" : "Map(",
             map,
             ").map((k, v) => MapEntry<String, ",
             valueType,
@@ -966,7 +972,7 @@ export class DartRenderer extends ConvenienceRenderer {
 
     private _emitTopLvlEncoderDecoder(): void {
         this.forEachTopLevel("leading-and-interposing", (t, name) => {
-            const { encoder, decoder } = defined(
+            const {encoder, decoder} = defined(
                 this._topLevelDependents.get(name),
             );
 
