@@ -213,6 +213,9 @@ export class DartRenderer extends ConvenienceRenderer {
                 "import 'package:freezed_annotation/freezed_annotation.dart';",
             );
             this.emitLine(
+                "// ignore: unused_import",
+            );
+            this.emitLine(
                 "import 'package:freezed_collection/freezed_collection.dart';",
             );
         }
