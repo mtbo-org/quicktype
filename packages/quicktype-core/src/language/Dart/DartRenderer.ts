@@ -921,7 +921,7 @@ export class DartRenderer extends ConvenienceRenderer {
         this.emitLine("enum ", enumName, " {");
         this.indent(() => {
             this.forEachEnumCase(e, "none", (name, jsonName, pos) => {
-                const comma = pos === "first" || pos === "middle" ? "," : [];
+                const comma = pos === "first" || pos === "middle" ? "," : ";";
           //      if (this._options.useJsonAnnotation) {
                     this.emitLine('@JsonValue("', stringEscape(jsonName), '")');
             //    }
@@ -929,7 +929,7 @@ export class DartRenderer extends ConvenienceRenderer {
                 this.emitLine(name, comma);
             });
         });
-        this.emitLine("}");
+        this.emitLine("\n  String toJson() => _$", enumName, "EnumMap[this]!;\n}");
 
         if (this._options.justTypes) return;
 
