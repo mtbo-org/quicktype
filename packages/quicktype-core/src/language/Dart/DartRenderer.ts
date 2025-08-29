@@ -915,16 +915,16 @@ export class DartRenderer extends ConvenienceRenderer {
 
     protected emitEnumDefinition(e: EnumType, enumName: Name): void {
         this.emitDescription(this.descriptionForType(e));
-        if (this._options.useJsonAnnotation) {
+        //if (this._options.useJsonAnnotation) {
             this.emitLine("@JsonEnum(alwaysCreate: true)");
-        }
+        //}
         this.emitLine("enum ", enumName, " {");
         this.indent(() => {
             this.forEachEnumCase(e, "none", (name, jsonName, pos) => {
                 const comma = pos === "first" || pos === "middle" ? "," : [];
-                if (this._options.useJsonAnnotation) {
+          //      if (this._options.useJsonAnnotation) {
                     this.emitLine('@JsonValue("', stringEscape(jsonName), '")');
-                }
+            //    }
 
                 this.emitLine(name, comma);
             });
